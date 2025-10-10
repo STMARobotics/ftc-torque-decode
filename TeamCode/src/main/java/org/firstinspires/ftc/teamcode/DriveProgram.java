@@ -42,6 +42,13 @@ public class DriveProgram extends OpMode {
 
     @Override
     public void loop() {
+        if (gamepad1.dpad_left && speed == 0.75) {
+            speed =  0.4;
+        }
+        if (gamepad1.dpad_left && speed == 0.4) {
+            speed = 0.75;
+        }
+
         double frontRightPower;
         double frontLeftPower;
         double backRightPower;
