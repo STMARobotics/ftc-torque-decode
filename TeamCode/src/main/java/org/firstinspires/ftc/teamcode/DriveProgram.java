@@ -15,6 +15,7 @@ public class DriveProgram extends OpMode {
     private DcMotor frontLeft = null;
     private DcMotor backLeft = null;
     private DcMotor backRight = null;
+    double speed = 0.75;
     private DcMotor catpult = null;
     @Override
     public void init() {
