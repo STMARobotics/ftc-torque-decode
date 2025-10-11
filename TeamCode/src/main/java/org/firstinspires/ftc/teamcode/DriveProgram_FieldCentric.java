@@ -89,7 +89,7 @@ public class DriveProgram_FieldCentric extends OpMode {
         if (gamepad1.y) {
             catpultPower = 1;
         }
-        if (gamepad1.a) {
+        else if (gamepad1.a) {
             catpultPower = -1;
             catcounter = 0;
         }
