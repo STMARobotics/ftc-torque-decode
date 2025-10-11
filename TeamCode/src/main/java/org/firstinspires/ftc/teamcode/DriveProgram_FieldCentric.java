@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@TeleOp(name="DriveProgram_FieldCentric", group="Tests")
+@TeleOp(name= "DriveProgram_FieldCentric", group= "Primary")
 public class DriveProgram_FieldCentric extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor frontRight = null;
