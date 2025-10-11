@@ -86,7 +86,7 @@ public class DriveProgram_FieldCentric extends OpMode {
         backRightPower = Range.clip( rotationY + rotationX - turn, -1, 1);
         backLeftPower = Range.clip(rotationY - rotationX + turn, -1, 1);
 
-        if (gamepad1.y) {
+        if (gamepad1.a && catcounter != 1) {
             catpultPower = 1;
             catcounter = 1;
         }
