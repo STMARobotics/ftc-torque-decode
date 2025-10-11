@@ -91,6 +91,7 @@ public class DriveProgram_FieldCentric extends OpMode {
         }
         if (gamepad1.a) {
             catpultPower = -1;
+            catcounter = 0;
         }
 
         frontRight.setPower(frontRightPower);
