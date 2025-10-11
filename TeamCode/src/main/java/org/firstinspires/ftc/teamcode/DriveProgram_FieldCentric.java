@@ -61,7 +61,7 @@ public class DriveProgram_FieldCentric extends OpMode {
         if (gamepad1.dpadLeftWasPressed() && speed == 0.75) {
              speed =  0.4;
         }
-        if (gamepad1.dpad_left && speed == 0.4) {
+        else if (gamepad1.dpadLeftWasPressed() && speed == 0.4) {
             speed = 0.75;
         }
 
