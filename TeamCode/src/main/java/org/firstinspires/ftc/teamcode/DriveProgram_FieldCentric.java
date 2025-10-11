@@ -70,7 +70,7 @@ public class DriveProgram_FieldCentric extends OpMode {
         double strafeInput =gamepad1.left_stick_x;
         double drive = Range.clip(driveInput * Math.sqrt(2), -speed, speed);
         double strafe = Range.clip(strafeInput * Math.sqrt(2), -speed, speed);
-        double turn = gamepad1.right_stick_x;
+        double turn = Range.clip(gamepad1.right_stick_x, -speed, speed);
 
         double rotationX = strafe * Math.cos(-heading) - drive * Math.sin(-heading);
         double rotationY = strafe * Math.sin(-heading) + drive * Math.cos(-heading);
