@@ -103,6 +103,7 @@ public class DriveProgram_FieldCentric extends OpMode {
         telemetry.addData("Run Time", runtime.toString());
         telemetry.addData("Heading", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
         telemetry.addData("Input ", "Y (%.2f), X (%.2f), RX (%.2f)", driveInput, strafeInput, turn);
+        telemetry.addData("Speed", speed);
         telemetry.addData("Power ","FR (%.2f), FL (%.2f), BR (%.2f), BL (%.2f)", frontRightPower, frontLeftPower, backRightPower, backLeftPower);
         telemetry.addData("Times Yaw has been Reset", headingResetCount);
         telemetry.addData("Speed", speed);
