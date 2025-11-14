@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-@Autonomous(name="Auto RN", group = "Tests")
-public class AutoRN extends LinearOpMode {
+@Autonomous(name = "Auto BF", group = "Tests")
+public class AutoBF extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor frontRight = null;
     private DcMotor frontLeft = null;
@@ -52,44 +52,13 @@ public class AutoRN extends LinearOpMode {
             telemetry.addData("Status", "Initialized");
             telemetry.update();
         }
-        driveplan();
-    }
-    public void driveplan() {
-        drivestraight(.85, 275);
-        turn(.75,315);
-        turn(-.1,100);
+
+        drivestraight(-.95, 775);
+        turn(-.5,235);
+        drivestraight(-.7, 900);
+        drivestraight(.1, 100);
         Stop(500);
         armlunch();
-    }
-    public void alllunch()  {
-        port.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        starboard.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        mast.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        mast.setPower(-0.6);
-        starboard.setPower(-0.6);
-        port.setPower(-0.6);
-        sleep(150);
-        starboard.setPower(0);
-        port.setPower(0);
-        mast.setPower(0);
-    }
-    public void portlunch()  {
-        port.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        port.setPower(-0.6);
-        sleep(150);
-        port.setPower(0);
-    }
-    public void starboardlunch()  {
-        starboard.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        starboard.setPower(-0.6);
-        sleep(150);
-        starboard.setPower(0);
-    }
-    public void mastlunch() {
-        mast.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        mast.setPower(-0.6);
-        sleep(150);
-        mast.setPower(0);
     }
     public void armlunch() {
         port.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

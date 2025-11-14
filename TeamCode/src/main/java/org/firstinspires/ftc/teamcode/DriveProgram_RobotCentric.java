@@ -1,19 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.bosch.BHI260IMU;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@TeleOp(name= "DriveProgram_FieldCentric", group= "Primary")
-public class DriveProgram_FieldCentric extends OpMode {
+@TeleOp(name= "DriveProgram_RobotCentric", group= "Primary")
+public class DriveProgram_RobotCentric extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor frontRight = null;
     private DcMotor frontLeft = null;
@@ -23,17 +19,10 @@ public class DriveProgram_FieldCentric extends OpMode {
     private DcMotor mast = null;
     private DcMotor starboard = null;
     double speed = 0.75;
-    private int headingResetCount = 0;
-    BHI260IMU imu;
     @Override
     public void init() {
         telemetry.addData("Status", "Initialized");
         telemetry.addData("Torque", "MAXIMUM");
-        telemetry.addData("ID","32251");
-        telemetry.addData("Mode","Field Centric");
-        telemetry.addData("Current Objective","Decode the Mystery");
-        // Into the Deep: Analyze the Specimens
-        // Centerstage: Paint the Canvas
 
         frontRight = hardwareMap.get(DcMotor.class, "frontright");
         frontLeft = hardwareMap.get(DcMotor.class, "frontleft");
@@ -57,41 +46,21 @@ public class DriveProgram_FieldCentric extends OpMode {
         starboard.setDirection(DcMotor.Direction.FORWARD);
         starboard.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         starboard.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        imu = hardwareMap.get(BHI260IMU.class, "imu");
-        IMU.Parameters parameters = new IMU.Parameters(
-                new RevHubOrientationOnRobot(
-                        RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
-                        RevHubOrientationOnRobot.UsbFacingDirection.UP));
-        imu.initialize(parameters);
-        imu.resetYaw();
     }
     @Override
     public void init_loop() {
     }
 
     @Override
-    public void start() {
-        runtime.reset();
-    }
+    public void start() {runtime.reset(); }
 
     @Override
     public void loop() {
         if (gamepad1.dpadLeftWasPressed()) {
-            speed = 0.25;
+            speed =  0.4;
         } else if (gamepad1.dpadRightWasPressed()) {
-            speed = 0.5;
+            speed = 0.75;
         }
-
-        double heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-        double driveInput = -gamepad1.left_stick_y;
-        double strafeInput = gamepad1.left_stick_x;
-        double drive = Range.clip(driveInput * Math.sqrt(2), -speed, speed);
-        double strafe = Range.clip(strafeInput * Math.sqrt(2), -speed, speed);
-        double turn = Range.clip(gamepad1.right_stick_x, -speed, speed);
-
-        double rotationX = strafe * Math.cos(-heading) - drive * Math.sin(-heading);
-        double rotationY = strafe * Math.sin(-heading) + drive * Math.cos(-heading);
 
         double frontRightPower;
         double frontLeftPower;
@@ -102,10 +71,16 @@ public class DriveProgram_FieldCentric extends OpMode {
         double mastPower;
         double starboardPower;
 
-        frontRightPower = Range.clip(rotationY - rotationX - turn, -1, 1);
-        frontLeftPower = Range.clip(rotationY + rotationX + turn, -1, 1);
-        backRightPower = Range.clip(rotationY + rotationX - turn, -1, 1);
-        backLeftPower = Range.clip(rotationY - rotationX + turn, -1, 1);
+        double driveInput = -gamepad1.left_stick_y;
+        double strafeInput =gamepad1.left_stick_x;
+        double drive = Range.clip(driveInput * Math.sqrt(2), -speed, speed);
+        double strafe = Range.clip(strafeInput * Math.sqrt(2), -speed, speed);
+        double turn = Range.clip(gamepad1.right_stick_x, -speed, speed);
+
+        frontRightPower = Range.clip(drive - strafe - turn, -1, 1);
+        frontLeftPower = Range.clip(drive + strafe + turn, -1, 1);
+        backRightPower = Range.clip(drive + strafe - turn, -1, 1);
+        backLeftPower = Range.clip(drive - strafe + turn, -1, 1);
 
         frontRight.setPower(frontRightPower);
         frontLeft.setPower(frontLeftPower);
@@ -113,8 +88,6 @@ public class DriveProgram_FieldCentric extends OpMode {
         backLeft.setPower(backLeftPower);
 
         int targetPosition = -460;
-        int minMargin = -30;
-        int maxMargin = 30;
         int portCurrentPosition = port.getCurrentPosition();
         int mastCurrentPostition = mast.getCurrentPosition();
         int starboardCurrentPosition = starboard.getCurrentPosition();
@@ -136,69 +109,28 @@ public class DriveProgram_FieldCentric extends OpMode {
             catpultPower = 0;
         }
 
-        if (gamepad1.x) {
-            portPower = -0.3;
-            port.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        } else {
-            portPower = catpultPower;
-        }
-
         if (gamepad1.a) {
-            mastPower = -0.3;
+            mastPower = -1;
             mast.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         } else {
             mastPower = catpultPower;
         }
 
-        if (gamepad1.b) {
-            starboardPower = -0.3;
-            starboard.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        } else {
-            starboardPower = catpultPower;
-        }
-
-        port.setPower(portPower);
         mast.setPower(mastPower);
-        starboard.setPower(starboardPower);
 
         telemetry.addLine("Status:");
         telemetry.addData("Run Time", runtime.toString());
-        telemetry.addData("Heading", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
-        telemetry.addData("Times Yaw has been Reset", headingResetCount);
         telemetry.addLine("Motor Data:");
         telemetry.addData("Input ", "Y (%.2f), X (%.2f), RX (%.2f)", driveInput, strafeInput, turn);
         telemetry.addData("Speed", speed);
         telemetry.addData("Power ","FR (%.2f), FL (%.2f), BR (%.2f), BL (%.2f)", frontRightPower, frontLeftPower, backRightPower, backLeftPower);
         telemetry.addLine("Catapult Data:");
-        telemetry.addData("Port Encoder",portCurrentPosition);
+        telemetry.addData("Port Encoder",0);
         telemetry.addData("Mast Encoder",mastCurrentPostition);
-        telemetry.addData("Starboard Encoder",starboardCurrentPosition);
-        if (gamepad1.dpad_down) {
-            telemetry.addLine("Prepareing Catapults");
-        }
-        if (Math.abs(portCurrentPosition - targetPosition) <= maxMargin && Math.abs(mastCurrentPostition - targetPosition) <= maxMargin && Math.abs(starboardCurrentPosition - targetPosition) <= maxMargin) {
-            if (Math.abs(portCurrentPosition - targetPosition) >= minMargin && Math.abs(mastCurrentPostition - targetPosition) >= minMargin && Math.abs(starboardCurrentPosition - targetPosition) >= minMargin) {
-                telemetry.addLine("All Catapults Armed");
-            }
-        }
-        if (gamepad1.y) {
-            telemetry.addLine("Status Update: Yaw has been reset");
-            imu.resetYaw();
-        }
-        if (gamepad1.yWasPressed()) {
-            headingResetCount++;
-        }
+        telemetry.addData("Starboard Encoder", 0);
+
         if (gamepad1.back) {
-            telemetry.addLine("A Eulogy to our First Robot" +
-                    "//" +
-                    "Dear Byter..." +
-                    "You where the joy of our team. " +
-                    "You hauled pixels like a semi truck." +
-                    "You pulled your self off your wheels like a monkey on a branch" +
-                    "You threw your drone like an olympic athlete" +
-                    "You rolled your eyes with the greatest of sarcasm" +
-                    "You bit like no byte before" +
-                    " - Love, William & the Byte Brigade");
+            telemetry.addLine("Boneless Chicken");
         }
     }
     @Override
